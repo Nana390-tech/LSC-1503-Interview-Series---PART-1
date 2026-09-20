@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Ready 1: Step Into the Room | LSC 1503</title>
+<style>
+:root{
+  --wine:#7A1E3C; --wine-dk:#521227; --wine-lt:#F3E3E9;
+  --mint:#BFE6D3; --mint-dk:#2E7457; --mint-lt:#EAF7F0;
+  --butter:#F4CC5A; --bg:#F4F2F6; --paper:#FFFFFF;
+  --ink:#241A21; --muted:#6B5F68; --line:#E3DCE2; --bad:#B3261E;
+}
+*{box-sizing:border-box}
+html{font-size:18px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,system-ui,-apple-system,sans-serif;line-height:1.6}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 .5em}
+h2{font-size:2rem;color:var(--wine-dk)}
+h3{font-size:1.3rem}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--butter);outline-offset:2px}
+.ar{font-family:"Segoe UI",Tahoma,"Arial",sans-serif;direction:rtl;unicode-bidi:isolate}
+/* top bar */
+.topbar{position:sticky;top:0;z-index:20;background:var(--wine-dk);color:#fff;display:flex;align-items:center;gap:1rem;padding:.55rem 1.2rem;flex-wrap:wrap}
+.topbar .brand{font-family:Georgia,serif;font-size:1.05rem;flex:1;min-width:200px}
+.topbar .brand small{opacity:.75;font-family:"Segoe UI",sans-serif;font-size:.8rem;display:block}
+.pill{background:rgba(255,255,255,.12);border-radius:999px;padding:.25rem .8rem;font-size:.9rem;white-space:nowrap}
+.pill b{color:var(--butter)}
+.tb-btn{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:.3rem .7rem;font-size:.85rem}
+.tb-btn:hover{background:rgba(255,255,255,.12)}
+/* layout */
+.wrap{display:grid;grid-template-columns:270px 1fr;min-height:calc(100vh - 56px)}
+nav.side{background:var(--paper);border-right:1px solid var(--line);padding:1rem .8rem;position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto}
+nav.side button{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:.55rem .6rem;color:var(--ink);font-size:.95rem}
+nav.side button:hover{background:var(--wine-lt)}
+nav.side button.active{background:var(--wine);color:#fff}
+nav.side .num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line);font-size:.8rem;flex:none;font-weight:700}
+nav.side button.active .num{border-color:#fff}
+nav.side button.done .num{background:var(--mint-dk);border-color:var(--mint-dk);color:#fff}
+main{padding:2rem clamp(1rem,4vw,3rem) 4rem;max-width:980px;width:100%}
+.lead{font-size:1.1rem;color:var(--muted);max-width:68ch}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:1.2rem 1.3rem;margin:1rem 0}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.fact{background:var(--paper);border-left:6px solid var(--wine);border-radius:10px;padding:1rem 1.1rem}
+.fact .big{font-family:Georgia,serif;font-size:1.5rem;color:var(--wine)}
+.tip{background:var(--mint-lt);border:1.5px solid var(--mint);border-radius:12px;padding:1rem 1.2rem;margin:1rem 0}
+.tip strong{color:var(--mint-dk)}
+.warn{background:#FFF6DD;border:1.5px solid var(--butter);border-radius:12px;padding:1rem 1.2rem;margin:1rem 0}
+.btn{background:var(--wine);color:#fff;border:0;border-radius:10px;padding:.7rem 1.3rem;font-weight:600}
+.btn:hover{background:var(--wine-dk)}
+.btn.ghost{background:transparent;color:var(--wine);border:2px solid var(--wine)}
+.btn.mint{background:var(--mint-dk)}
+.act-head{display:flex;align-items:center;gap:.6rem;margin-top:2rem;padding-top:1.2rem;border-top:2px dashed var(--line)}
+.act-head .tag{background:var(--butter);color:var(--ink);font-weight:700;border-radius:6px;padding:.1rem .55rem;font-size:.85rem}
+/* MCQ */
+.q{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;margin:.8rem 0}
+.q .qt{font-weight:600;margin-bottom:.6rem}
+.opts{display:flex;flex-wrap:wrap;gap:.5rem}
+.opts button{background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:.5rem .9rem;text-align:left;color:var(--ink)}
+.opts button:hover:not(:disabled){border-color:var(--wine)}
+.opts.stack{flex-direction:column}
+.opts button.right{background:var(--mint-lt);border-color:var(--mint-dk);color:var(--mint-dk);font-weight:600}
+.opts button.wrong{background:#FCE8E6;border-color:var(--bad);color:var(--bad)}
+.opts button:disabled{cursor:default}
+.fb{margin-top:.6rem;font-size:.95rem;border-radius:8px;padding:.5rem .8rem;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--mint-lt);color:var(--mint-dk)}
+.fb.no{background:#FCE8E6;color:#7d1a14}
+.score{font-weight:700;color:var(--wine);margin:.8rem 0}
+/* rubric */
+.rub{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+.rub .card{margin:0;position:relative;padding-top:1.4rem}
+.rub .wt{position:absolute;top:-14px;right:14px;background:var(--wine);color:#fff;border-radius:999px;padding:.15rem .75rem;font-weight:700;font-size:.9rem}
+.rub ul{padding-left:1.1rem;margin:.3rem 0}
+.bar{display:flex;height:34px;border-radius:10px;overflow:hidden;margin:1rem 0;font-size:.8rem;font-weight:700;color:#fff}
+.bar div{display:grid;place-items:center}
+.ladder{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0}
+.ladder span{border-radius:8px;padding:.2rem .6rem;font-size:.85rem;background:var(--bg);border:1px solid var(--line)}
+/* flip cards */
+.flips{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.9rem}
+.flip{perspective:900px;height:170px;background:none;border:0;padding:0}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;padding:.9rem;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.flip .f{background:var(--wine);color:#fff;font-family:Georgia,serif;font-size:1.3rem}
+.flip .f small{font-family:"Segoe UI",sans-serif;font-size:.75rem;opacity:.7;margin-top:.4rem}
+.flip .b{background:var(--mint-lt);border:2px solid var(--mint);transform:rotateY(180deg);font-size:.88rem;color:var(--ink)}
+.flip .b .ar{font-size:1.2rem;font-weight:700;color:var(--mint-dk);margin-bottom:.4rem}
+/* timeline */
+.tl{position:relative;margin:1rem 0 1rem .6rem;padding-left:1.8rem;border-left:4px solid var(--mint)}
+.tl .step{position:relative;margin-bottom:1.3rem}
+.tl .step::before{content:"";position:absolute;left:-2.35rem;top:.3rem;width:18px;height:18px;border-radius:50%;background:var(--wine);border:4px solid var(--bg)}
+.say{display:inline-block;background:var(--wine-lt);color:var(--wine-dk);border-radius:8px;padding:.1rem .5rem;margin:.15rem .1rem;font-style:italic}
+/* transcript */
+.script{background:var(--paper);border-radius:12px;padding:1rem 1.2rem;border:2px solid var(--line)}
+.script.weak{border-color:#E7B7B2}.script.strong{border-color:var(--mint)}
+.script p{margin:.4rem 0}
+.script .act{color:var(--muted);font-style:italic;font-size:.92rem}
+.script .who{font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.chk{display:flex;flex-direction:column;gap:.4rem;margin:.6rem 0}
+.chk label{display:flex;gap:.6rem;align-items:flex-start;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:.5rem .8rem;cursor:pointer}
+.chk label.right{border-color:var(--mint-dk);background:var(--mint-lt)}
+.chk label.wrong{border-color:var(--bad);background:#FCE8E6}
+.chk label.missed{border-style:dashed;border-color:var(--mint-dk)}
+/* breathing */
+.breathe{display:flex;flex-direction:column;align-items:center;gap:.8rem;padding:1rem}
+.circle{width:120px;height:120px;border-radius:50%;background:var(--mint);display:grid;place-items:center;font-weight:700;color:var(--mint-dk);transition:transform 4s ease-in-out}
+/* recorder */
+.rec{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:1.1rem;margin:1rem 0}
+.rec .prompt{background:var(--wine-lt);border-radius:10px;padding:.7rem .9rem;margin:.5rem 0}
+.rec .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.6rem}
+.rec audio{width:100%;max-width:380px;margin-top:.5rem}
+.recdot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--bad);animation:blink 1s infinite;vertical-align:middle}
+@keyframes blink{50%{opacity:.2}}
+/* home door */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:center;margin-bottom:2rem}
+.frame{width:250px;height:360px;background:var(--wine-dk);border-radius:125px 125px 6px 6px;padding:12px 12px 0;perspective:1200px;position:relative}
+.frame::after{content:"";position:absolute;inset:12px 12px 0;border-radius:113px 113px 0 0;background:linear-gradient(180deg,#FDF6E3 0%,#F4CC5A 100%)}
+.door{position:relative;z-index:2;width:100%;height:100%;border-radius:113px 113px 0 0;background:var(--wine);transform-origin:left center;transition:transform 1.4s cubic-bezier(.6,.1,.2,1);box-shadow:inset 0 0 0 10px rgba(0,0,0,.1)}
+.door .panel{position:absolute;left:28px;right:28px;border:3px solid rgba(255,255,255,.18);border-radius:8px}
+.door .p1{top:120px;height:80px;border-radius:70px 70px 8px 8px;top:40px;height:140px}
+.door .p2{top:200px;height:110px}
+.door .knob{position:absolute;right:22px;top:190px;width:18px;height:18px;border-radius:50%;background:var(--butter)}
+.door .sign{position:absolute;left:50%;top:110px;transform:translateX(-50%) rotate(-3deg);background:var(--mint);color:var(--mint-dk);border-radius:8px;padding:.45rem .8rem;text-align:center;font-weight:700;font-size:.85rem;width:150px;box-shadow:0 4px 0 var(--mint-dk);transform-origin:top center}
+.door .sign::before{content:"";position:absolute;left:50%;top:-22px;width:40px;height:22px;border:2px solid var(--butter);border-bottom:0;border-radius:20px 20px 0 0;transform:translateX(-50%)}
+.door.knock{animation:knock .45s 2}
+@keyframes knock{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.door.open{transform:rotateY(-78deg)}
+.series{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.8rem;margin-top:1rem}
+.tile{border-radius:14px 14px 10px 10px;padding:1rem;background:var(--paper);border:1px solid var(--line);border-top:8px solid var(--c)}
+.tile.here{outline:3px solid var(--wine)}
+.tile.reserved{border:2px dashed #b9aeb7;border-top:8px dashed #b9aeb7;background:transparent}
+.tile .n{font-size:.8rem;color:var(--muted)}
+.tile h3{font-size:1.05rem;margin:.2rem 0}
+.tile p{font-size:.85rem;margin:0;color:var(--muted)}
+.namebox{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
+.namebox input{flex:1;min-width:220px;font:inherit;padding:.6rem .9rem;border:2px solid var(--line);border-radius:10px}
+.badges{display:flex;flex-wrap:wrap;gap:.6rem}
+.badge{display:flex;align-items:center;gap:.4rem;background:var(--paper);border:2px solid var(--line);border-radius:999px;padding:.3rem .8rem;font-size:.85rem;opacity:.45}
+.badge.got{opacity:1;border-color:var(--mint-dk);background:var(--mint-lt)}
+.next{display:flex;justify-content:space-between;margin-top:2.5rem;gap:1rem}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:.7rem 1.2rem;border-radius:12px;z-index:60;transition:transform .35s;font-weight:600}
+.toast.show{transform:translateX(-50%) translateY(0)}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:50}
+/* certificate: interview pass */
+.overlay{position:fixed;inset:0;background:rgba(36,26,33,.7);display:none;align-items:center;justify-content:center;z-index:70;padding:1rem}
+.overlay.show{display:flex}
+.pass{background:#fff;width:min(430px,100%);border-radius:18px;overflow:hidden;text-align:center;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.pass .strap{height:70px;background:repeating-linear-gradient(90deg,var(--wine) 0 18px,var(--wine-dk) 18px 36px);position:relative}
+.pass .hole{position:absolute;left:50%;bottom:-12px;transform:translateX(-50%);width:70px;height:16px;border-radius:10px;background:var(--bg);border:3px solid var(--wine-dk)}
+.pass .body{padding:1.8rem 1.5rem 1.2rem}
+.pass .photo{width:92px;height:92px;border-radius:50%;margin:0 auto .6rem;background:var(--mint);display:grid;place-items:center;font-family:Georgia,serif;font-size:2.2rem;color:var(--mint-dk);font-weight:700}
+.pass .nm{font-family:Georgia,serif;font-size:1.6rem;color:var(--wine-dk)}
+.pass .lbl{background:var(--wine);color:#fff;border-radius:8px;display:inline-block;padding:.2rem .9rem;margin:.6rem 0;font-weight:700}
+.pass .meta{font-size:.85rem;color:var(--muted)}
+.pass .foot{background:var(--mint-lt);padding:.7rem;font-size:.8rem;color:var(--mint-dk)}
+.pass-actions{display:flex;gap:.5rem;justify-content:center;padding:0 1rem 1rem;flex-wrap:wrap}
+footer.credit{text-align:center;color:var(--muted);font-size:.85rem;padding:1.5rem}
+@media(max-width:820px){
+  .wrap{grid-template-columns:1fr}
+  nav.side{position:static;height:auto;display:flex;overflow-x:auto;gap:.3rem;border-right:0;border-bottom:1px solid var(--line);padding:.5rem}
+  nav.side button{width:auto;white-space:nowrap}
+  nav.side .lbl{display:none}
+  nav.side button.active .lbl{display:inline}
+  .hero{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .two{grid-template-columns:1fr}
+  h2{font-size:1.6rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  body *{visibility:hidden}
+  .overlay,.overlay *{visibility:visible}
+  body > :not(.overlay){display:none!important}
+  .overlay{position:static;background:#fff;display:flex}
+  .pass-actions{display:none}
+  .pass{box-shadow:none;border:2px solid var(--wine)}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media(max-width:820px){
+  .topbar{gap:.35rem .5rem;padding:.45rem .7rem}
+  .topbar .brand{flex:1 1 100%;font-size:.95rem;min-width:0}
+  .topbar .brand small{display:none}
+  .pill,.tb-btn{font-size:.78rem;padding:.2rem .55rem}
+}
+main:focus{outline:none}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">Interview Ready 1: Step Into the Room<small>LSC 1503 Interview Assessment preparation</small></div>
+  <span class="pill">Points <b id="pts">0</b></span>
+  <span class="pill">Badges <b id="bdg">0</b>/9</span>
+  <button class="tb-btn" id="saveBtn" title="Download your progress as a file">Save progress</button>
+  <button class="tb-btn" id="loadBtn" title="Open a progress file you saved">Load progress</button>
+  <input type="file" id="loadFile" accept=".json" hidden>
+</header>
+<div class="wrap">
+  <nav class="side" id="nav" aria-label="Stations"></nav>
+  <main id="main" tabindex="-1"></main>
+</div>
+<footer class="credit">Designed by: Nazila Motahari</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<canvas id="fx"></canvas>
+<div class="overlay" id="cert" role="dialog" aria-modal="true" aria-label="Interview Pass certificate">
+  <div>
+    <div class="pass">
+      <div class="strap"><div class="hole"></div></div>
+      <div class="body">
+        <div class="photo" id="cInit">?</div>
+        <div class="nm" id="cName">Student</div>
+        <div class="lbl">Interview Pass: Room 1</div>
+        <p style="margin:.3rem 0">has completed <b>Step Into the Room</b> and is ready for the next step of interview preparation.</p>
+        <p class="meta" id="cMeta"></p>
+      </div>
+      <div class="foot">LSC 1503 Professional Spoken Communication<br>Designed by: Nazila Motahari</div>
+    </div>
+    <div class="pass-actions" style="margin-top:1rem">
+      <button class="btn" onclick="window.print()">Print or save as PDF</button>
+      <button class="btn mint" id="resBtn">Download results</button>
+      <button class="btn ghost" style="background:#fff" onclick="document.getElementById('cert').classList.remove('show')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= STATE ================= */
+const S={name:'',points:0,badges:[],done:{},answered:{},final:null,recs:{}};
+const BADGES={
+ s1:{icon:'📋',name:'Exam Explorer'}, s2:{icon:'🧭',name:'Rubric Reader'}, s3:{icon:'📚',name:'Word Collector'},
+ s4:{icon:'🤝',name:'Polite Pro'}, s5:{icon:'🧍',name:'Body Talker'}, s6:{icon:'🌿',name:'Calm Mind'},
+ s7:{icon:'🔍',name:'Sharp Eye'}, s8:{icon:'🎙️',name:'On Air'}, s9:{icon:'🎫',name:'Interview Ready'}
+};
+const STATIONS=[
+ {id:'home',t:'Welcome'},
+ {id:'s1',t:'The exam at a glance'},
+ {id:'s2',t:'The rubric in plain English'},
+ {id:'s3',t:'Key words'},
+ {id:'s4',t:'Professional from start to end'},
+ {id:'s5',t:'Body language'},
+ {id:'s6',t:'Tips and tricks to stay calm'},
+ {id:'s7',t:'Watch and compare'},
+ {id:'s8',t:'Rehearsal studio'},
+ {id:'s9',t:'Final check'}
+];
+let cur='home';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+function addPts(n){S.points+=n;$('#pts').textContent=S.points}
+function award(id){
+  if(S.badges.includes(id))return;
+  S.badges.push(id);S.done[id]=true;$('#bdg').textContent=S.badges.length;
+  toast(`${BADGES[id].icon} Badge earned: ${BADGES[id].name}`);confetti();renderNav();
+}
+function refreshTop(){$('#pts').textContent=S.points;$('#bdg').textContent=S.badges.length}
+
+/* ================= CONFETTI ================= */
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const c=$('#fx'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
+  const cols=['#7A1E3C','#BFE6D3','#F4CC5A','#2E7457','#F3E3E9'];
+  const P=Array.from({length:140},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,r:5+Math.random()*6,c:cols[Math.random()*5|0],vy:2+Math.random()*3,vx:-1.5+Math.random()*3,a:Math.random()*6}));
+  let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.a+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);x.restore()});if(++f<170)requestAnimationFrame(tick);else x.clearRect(0,0,c.width,c.height)})();
+}
+
+/* ================= MCQ ENGINE ================= */
+/* items: {q, o:[...], a:index, why} ; key: unique set id */
+function mcq(el,key,items,opts={}){
+  const box=document.createElement('div');el.appendChild(box);
+  const stack=opts.stack!==false;
+  let right=0,count=0;
+  items.forEach((it,i)=>{
+    const q=document.createElement('div');q.className='q';
+    q.innerHTML=`<div class="qt">${i+1}. ${it.q}</div><div class="opts ${stack&&!opts.inline?'stack':''}"></div><div class="fb"></div>`;
+    const ob=q.querySelector('.opts'),fb=q.querySelector('.fb');
+    it.o.forEach((o,j)=>{
+      const b=document.createElement('button');b.innerHTML=o;
+      b.onclick=()=>{
+        ob.querySelectorAll('button').forEach(x=>x.disabled=true);
+        const ok=j===it.a;
+        b.classList.add(ok?'right':'wrong');
+        if(!ok)ob.children[it.a].classList.add('right');
+        fb.className='fb show '+(ok?'ok':'no');
+        fb.innerHTML=(ok?'✔ Correct! ':'✘ Not quite. ')+(it.why||'');
+        const aKey=key+'_'+it.q;if(ok){right++;if(!S.answered[aKey])addPts(10)}
+        count++;S.answered[aKey]=S.answered[aKey]||ok;
+        if(count===items.length){
+          const sc=box.querySelector('.score');sc.textContent=`You got ${right} out of ${items.length}.`;
+          opts.done&&opts.done(right,items.length);
+        }
+      };
+      ob.appendChild(b);
+    });
+    box.appendChild(q);
+  });
+  const sc=document.createElement('div');sc.className='score';box.appendChild(sc);
+}
+function actHead(el,tag,title){
+  const d=document.createElement('div');d.className='act-head';
+  d.innerHTML=`<span class="tag">${tag}</span><h3 style="margin:0">${title}</h3>`;el.appendChild(d);
+}
+function nextBtns(el){
+  const i=STATIONS.findIndex(s=>s.id===cur);
+  const d=document.createElement('div');d.className='next';
+  d.innerHTML=(i>0?`<button class="btn ghost" data-go="${STATIONS[i-1].id}">Back</button>`:'<span></span>')+
+    (i<STATIONS.length-1?`<button class="btn" data-go="${STATIONS[i+1].id}">Next: ${STATIONS[i+1].t}</button>`:'');
+  d.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+  el.appendChild(d);
+}
+
+/* ================= NAV ================= */
+function renderNav(){
+  const n=$('#nav');n.innerHTML='';
+  STATIONS.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className=(s.id===cur?'active ':'')+(S.done[s.id]?'done':'');
+    b.innerHTML=`<span class="num">${i===0?'⌂':(S.done[s.id]?'✓':i)}</span><span class="lbl">${s.t}</span>`;
+    b.onclick=()=>go(s.id);
+    n.appendChild(b);
+  });
+}
+function go(id){cur=id;renderNav();const m=$('#main');m.innerHTML='';VIEWS[id](m);nextBtns(m);window.scrollTo(0,0);m.focus({preventScroll:true})}
+
+/* ================= VIEWS ================= */
+const VIEWS={};
+
+VIEWS.home=m=>{
+  m.innerHTML=`
+  <div class="hero">
+    <div class="frame"><div class="door" id="door"><div class="panel p1"></div><div class="panel p2"></div><div class="sign">Now interviewing:<br><span id="signName">${S.name?esc(S.name):'you!'}</span></div><div class="knob"></div></div></div>
+    <div>
+      <h2 style="font-size:2.4rem">Step Into the Room</h2>
+      <p class="lead">Your LSC 1503 interview is a real interview. In this app you will learn what happens in the room, how the teacher gives marks, and how to look, sound and act like a professional.</p>
+      <div class="namebox">
+        <input id="nameIn" placeholder="Type your full name" value="${esc(S.name)}" aria-label="Your full name">
+        <button class="btn" id="knockBtn">Knock to enter</button>
+      </div>
+      <p style="font-size:.9rem;color:var(--muted)">Your name goes on your Interview Pass at the end.</p>
+    </div>
+  </div>
+  <h3>Your badges</h3>
+  <div class="badges">${Object.entries(BADGES).map(([k,b])=>`<span class="badge ${S.badges.includes(k)?'got':''}">${b.icon} ${b.name}</span>`).join('')}</div>
+  <div class="card">
+    <h3>How this app works</h3>
+    <p style="margin:0">Go through the 9 stations in order. Each station has something to <b>learn</b> and something to <b>practise</b>. Correct answers give you 10 points. Finish a station to earn its badge. Score 80% or more in the Final Check to get your <b>Interview Pass</b>. Click <b>Save progress</b> at the top to keep your work and <b>Load progress</b> to continue later.</p>
+  </div>
+  <h3 style="margin-top:2rem">The Interview Ready series</h3>
+  <div class="series">
+    <div class="tile here" style="--c:#7A1E3C"><div class="n">App 1 (you are here)</div><h3>Step Into the Room</h3><p>The exam, the rubric, key words, professionalism, body language, calm-down tricks</p></div>
+    <div class="tile" style="--c:#2B5D8C"><div class="n">App 2</div><h3>Tell Me About Yourself</h3><p>Question 1</p></div>
+    <div class="tile" style="--c:#B5651D"><div class="n">App 3</div><h3>Study Skills for My Future Job</h3><p>Question 2</p></div>
+    <div class="tile" style="--c:#5E7A2E"><div class="n">App 4</div><h3>Self-Description Questions</h3><p>Questions 3a and 3b: strengths and weaknesses, teams or independent work</p></div>
+    <div class="tile" style="--c:#6B3FA0"><div class="n">App 5</div><h3>Behavioural Questions</h3><p>Questions 3c to 3e: teamwork, explaining, challenges</p></div>
+    <div class="tile" style="--c:#8A6500"><div class="n">App 6</div><h3>Future Questions</h3><p>Questions 3f to 3h: college, learning, career</p></div>
+    <div class="tile" style="--c:#241A21;background:#FBF3E4"><div class="n">Final practice</div><h3>The Mock Interview</h3><p>All the questions, peer practice, and your printable script</p></div>
+  </div>`;
+  const nameIn=$('#nameIn');
+  nameIn.oninput=()=>{S.name=nameIn.value.trim();$('#signName').textContent=S.name||'you!'};
+  $('#knockBtn').onclick=()=>{
+    if(!S.name){toast('Please type your name first.');nameIn.focus();return}
+    const d=$('#door');d.classList.add('knock');
+    setTimeout(()=>{d.classList.remove('knock');d.classList.add('open')},950);
+    setTimeout(()=>go('s1'),2200);
+  };
+};
+
+VIEWS.s1=m=>{
+  m.innerHTML=`<h2>1. The exam at a glance</h2>
+  <p class="lead">Know the facts before you walk in. No surprises means less stress.</p>
+  <div class="grid">
+    <div class="fact"><div class="big">Just you</div>An individual interview. Your teacher interviews you alone. Sometimes a third person may be in the room.</div>
+    <div class="fact"><div class="big">In person</div>Face-to-face in a room, not online.</div>
+    <div class="fact"><div class="big">3–5 minutes</div>Short, so every answer counts.</div>
+    <div class="fact"><div class="big">Recorded</div>The interview is audio recorded on BB Collaborate. Other teachers will listen to it.</div>
+    <div class="fact"><div class="big">20%</div>of your LSC 1503 grade. It happens in Week 8.</div>
+    <div class="fact"><div class="big">No notes</div>No phone, no notes, no reading from a screen.</div>
+  </div>
+  <div class="card">
+    <h3>The questions</h3>
+    <p><b>Question 1 (always asked):</b> Tell me about yourself. <em>(App 2)</em></p>
+    <p><b>Question 2 (always asked):</b> Which study skill from LSC 1503 will be most useful in your future job? <em>(App 3)</em></p>
+    <p><b>Questions 3 and 4 (teacher's choice, if there is time):</b> from the list 3a–3h. <em>(Self-description: App 4. Behavioural: App 5. Future: App 6.)</em></p>
+    <p style="margin-bottom:0"><b>Follow-up questions:</b> the teacher may ask more to help you say more, for example <span class="say">Can you tell me more about that?</span> <span class="say">Can you give me an example of that?</span> <span class="say">What did you do in that situation?</span></p>
+  </div>
+  <div class="warn"><b>Important:</b> You have all the questions now, but your teacher will <b>not</b> tell you which ones they will choose. Prepare <b>all</b> of them.</div>`;
+  actHead(m,'Practice','True or false?');
+  const TF=['True','False'];
+  mcq(m,'s1',[
+   {q:'The interview is online on Microsoft Teams.',o:TF,a:1,why:'It is face-to-face, in person.'},
+   {q:'The interview takes about 3 to 5 minutes.',o:TF,a:0,why:'Yes, 3–5 minutes.'},
+   {q:'Your teacher tells you which questions you will get before the interview.',o:TF,a:1,why:'You know the list, but not which ones the teacher will pick.'},
+   {q:'"Tell me about yourself" is always asked.',o:TF,a:0,why:'Question 1 is mandatory for everyone.'},
+   {q:'Other teachers may listen to your interview.',o:TF,a:0,why:'It is recorded, and other teachers listen as part of grading.'},
+   {q:'You can bring notes and read your answers.',o:TF,a:1,why:'No notes or screen reading. It lowers your Communication Skills mark.'},
+   {q:'The teacher may ask extra follow-up questions.',o:TF,a:0,why:'Yes, for example "Can you give me an example of that?"'}
+  ],{inline:true,done:(r,t)=>{if(r/t>=.7)award('s1');else toast('Try the station again to earn the badge (70%+).')}});
+};
+
+VIEWS.s2=m=>{
+  m.innerHTML=`<h2>2. The rubric in plain English</h2>
+  <p class="lead">The rubric is how your teacher gives you marks. There are four parts. Look at the weights: content is the biggest.</p>
+  <div class="bar" aria-label="Marks: Content 40, Professionalism 10, Language 25, Communication 25">
+    <div style="flex:40;background:var(--wine)">Content 40</div>
+    <div style="flex:10;background:#A8506D">10</div>
+    <div style="flex:25;background:var(--mint-dk)">Language 25</div>
+    <div style="flex:25;background:#5C9C80">Communication 25</div>
+  </div>
+  <div class="rub">
+    <div class="card"><span class="wt">40 marks</span><h3>Content</h3><p style="color:var(--muted);margin:0">Task achievement: quality of spoken content</p>
+      <ul><li>Answer the question you <b>hear</b>. Listen carefully.</li><li>Give <b>real, true examples</b> (school projects and competitions are fine).</li><li>Give details so the teacher can "see" your story.</li><li>Sound <b>natural</b>, not memorized.</li></ul>
+      <p style="margin:0"><b>Watch out:</b> very short answers, answers that don't match the question, sounding like a robot.</p></div>
+    <div class="card"><span class="wt">10 marks</span><h3>Professionalism</h3><p style="color:var(--muted);margin:0">Task achievement: professionalism</p>
+      <ul><li>Be <b>on time</b>.</li><li>Dress professionally: national dress, formal clothes, or your lab/clinic uniform.</li><li>Be <b>polite</b>: <span class="say">Good morning</span> <span class="say">Thank you</span></li></ul>
+      <p style="margin:0"><b>Watch out:</b> coming more than 5 minutes late, informal words, phones and lots of bags.</p></div>
+    <div class="card"><span class="wt">25 marks</span><h3>Language</h3><p style="color:var(--muted);margin:0">Spoken language</p>
+      <ul><li>Use vocabulary and grammar from the course: the <b>LSC 1503 Key Language List</b>, <b>Unit 2</b>, <b>Grammar Self-Study 1 and 2</b>, and your Nearpods.</li><li>Speak fluently (keep going).</li><li>Fix small mistakes calmly.</li></ul>
+      <p style="margin:0"><b>Watch out:</b> long silences, many "umm"s, correcting yourself too much.</p></div>
+    <div class="card"><span class="wt">25 marks</span><h3>Communication skills</h3><p style="color:var(--muted);margin:0">Voice and non-verbal</p>
+      <ul><li><b>Voice:</b> loud, clear, good pace, pauses.</li><li><b>Body:</b> eye contact, good posture, natural gestures, a smile.</li><li><b>Confidence:</b> use strategies to recover when you feel nervous.</li><li>Build <b>rapport</b> (a friendly connection).</li></ul>
+      <p style="margin:0"><b>Watch out:</b> low voice, looking down, reading notes.</p></div>
+  </div>
+  <div class="card"><h3>What the marks mean</h3>
+    <div class="ladder"><span>100% Outstanding</span><span>90% Distinction</span><span>80% Merit</span><span>70% Satisfaction</span><span>60% Minimally competent</span><span>40% / 20% Not yet competent</span><span>0% No attempt</span></div>
+    <p style="margin:0">Good news: if you make a mistake <b>once or twice</b> and correct yourself, it will <b>not</b> affect your grade.</p></div>`;
+  actHead(m,'Practice','Which part of the rubric is it?');
+  const R=['Content (40)','Professionalism (10)','Language (25)','Communication skills (25)'];
+  mcq(m,'s2',[
+   {q:'She arrives 5 minutes early.',o:R,a:1,why:'Punctuality is part of Professionalism.'},
+   {q:'He gives a real example from his Grade 12 science project.',o:R,a:0,why:'True, meaningful examples are Content.'},
+   {q:'She keeps good eye contact and smiles.',o:R,a:3,why:'Eye contact and facial expression are non-verbal Communication skills.'},
+   {q:'He uses "However," and "For example," correctly.',o:R,a:2,why:'Range of vocabulary and grammar is Language.'},
+   {q:'She says "Sorry, I mean I went" after a small mistake.',o:R,a:2,why:'Self-correction is part of Language.'},
+   {q:'He answers exactly the question the teacher asked.',o:R,a:0,why:'Relevant answers and active listening are Content.'},
+   {q:'She wears national dress.',o:R,a:1,why:'Appropriate clothing is Professionalism.'},
+   {q:'He speaks loudly and clearly, so the recording is clear.',o:R,a:3,why:'Volume and clear pronunciation are Communication skills (voice).'},
+   {q:'She feels nervous, takes a breath, and continues calmly.',o:R,a:3,why:'Confidence recovery strategies are Communication skills.'}
+  ],{done:(r,t)=>{if(r/t>=.7)award('s2');else toast('Read the four cards again, then retry (70%+).')}});
+};
+
+const VOCAB=[
+ ['interviewer','المُحاوِر (الشخص الذي يُجري المقابلة)','The interviewer asked me about my hobbies.'],
+ ['candidate','المُرشَّح','Each candidate has 3–5 minutes.'],
+ ['punctual','ملتزم بالمواعيد','Be punctual: arrive 5 minutes early.'],
+ ['professional','مِهَني','National dress looks professional.'],
+ ['polite','مُهذَّب','Saying "thank you" is polite.'],
+ ['formal','رسمي','Formal: "Yes, of course." Informal: "Yeah."'],
+ ['active listening','الإصغاء الفعّال','Nodding and answering the real question show active listening.'],
+ ['example','مثال','Give an example from a school project.'],
+ ['strength','نقطة قوة','My strength is teamwork.'],
+ ['weakness','نقطة ضعف','My weakness is time management, but I am improving.'],
+ ['memorize','يحفظ غيبًا','Don\'t memorize your answers word for word.'],
+ ['confident','واثق بنفسه','Sit up straight to look confident.'],
+ ['eye contact','التواصل البصري','Keep eye contact with the interviewer.'],
+ ['posture','وضعية الجسم','Good posture: back straight, shoulders relaxed.'],
+ ['gesture','إيماءة (حركة اليد)','Open-palm gestures show honesty.'],
+ ['hesitation','تردُّد','Turn a hesitation into a short pause.'],
+ ['follow-up question','سؤال متابعة','"Can you tell me more?" is a follow-up question.'],
+ ['self-correct','يُصحِّح نفسه','If you make a mistake, self-correct: "Sorry, I mean…"']
+];
+VIEWS.s3=m=>{
+  m.innerHTML=`<h2>3. Key words</h2>
+  <p class="lead">These words describe the interview and the rubric. Click a card to see the Arabic meaning and an example.</p>
+  <div class="flips">${VOCAB.map(v=>`<button class="flip" aria-label="${v[0]}"><div class="in"><div class="f">${v[0]}<small>click to flip</small></div><div class="b"><div class="ar" lang="ar">${v[1]}</div>${esc(v[2])}</div></div></button>`).join('')}</div>`;
+  m.querySelectorAll('.flip').forEach(f=>f.onclick=()=>f.classList.toggle('on'));
+  actHead(m,'Practice','Choose the missing word');
+  mcq(m,'s3',[
+   {q:'The interview starts at 9:00. Arrive at 8:55. Please be ______.',o:['punctual','confident','formal'],a:0,why:'Punctual = on time.'},
+   {q:'"Sorry, could you repeat that, please?" is a ______ way to ask.',o:['weak','polite','memorized'],a:1,why:'"Sorry" and "please" make it polite.'},
+   {q:'Don\'t ______ your answers word for word. You will sound like a robot.',o:['memorize','correct','prepare'],a:0,why:'Prepare ideas and keywords, not full scripts.'},
+   {q:'"Can you give me an example of that?" is a ______.',o:['weakness','follow-up question','gesture'],a:1,why:'The teacher asks it to help you say more.'},
+   {q:'Sit with your back straight. Good ______ helps you look confident.',o:['eye contact','posture','hesitation'],a:1,why:'Posture = how you sit or stand.'},
+   {q:'I said "Yesterday I go" and then "Sorry, I went." I ______.',o:['hesitated','self-corrected','memorized'],a:1,why:'You fixed your own mistake.'},
+   {q:'Nodding and giving answers that match the question show ______.',o:['active listening','punctuality','a weakness'],a:0,why:'Active listening = really listening and responding well.'},
+   {q:'"My ______ is that I work well in a team."',o:['weakness','strength','gesture'],a:1,why:'Something you are good at is a strength.'}
+  ],{done:(r,t)=>{if(r/t>=.7)award('s3');else toast('Flip the cards again, then retry (70%+).')}});
+};
+
+VIEWS.s4=m=>{
+  m.innerHTML=`<h2>4. Professional from start to end</h2>
+  <p class="lead">Treat it like a real job interview from the moment you arrive until you leave the room.</p>
+  <div class="tl">
+    <div class="step"><h3>The day before</h3>Prepare your clothes: national dress, formal clothes, or your lab/clinic uniform. Practise your answers out loud. Sleep well.</div>
+    <div class="step"><h3>Arriving</h3>Arrive <b>5–10 minutes early</b>. Switch off your phone and keep it away. Don't bring lots of bags. Take two slow breaths.</div>
+    <div class="step"><h3>At the door</h3>Knock and wait. Then: <span class="say">Good morning, Ms Sara. May I come in?</span></div>
+    <div class="step"><h3>Sitting down</h3>Wait until the teacher invites you: <span class="say">Please have a seat.</span> Answer <span class="say">Thank you.</span> Keep your bag on the floor.</div>
+    <div class="step"><h3>Small talk</h3>Teacher: <span class="say">How are you today?</span> You: <span class="say">I'm very well, thank you. How are you?</span></div>
+    <div class="step"><h3>During the interview</h3>Listen carefully. Use formal, polite language. Stay positive, even about difficult experiences.</div>
+    <div class="step"><h3>Leaving</h3><span class="say">Thank you for your time.</span> <span class="say">Have a nice day.</span> Stand up calmly and leave quietly.</div>
+  </div>
+  <div class="tip"><strong>Remember the register:</strong> Register means choosing words that fit the situation. With friends you say <em>"Yeah"</em>. In an interview you say <em>"Yes, of course."</em></div>`;
+  actHead(m,'Practice','Choose the more professional sentence');
+  mcq(m,'s4',[
+   {q:'You enter the room.',o:['Hi! What\'s up?','Good morning, Ms Sara. May I come in?'],a:1,why:'A formal greeting and asking permission are professional.'},
+   {q:'You didn\'t hear the question.',o:['What?','Sorry, could you repeat the question, please?'],a:1,why:'"Sorry… please" is polite. "What?" sounds rude.'},
+   {q:'The teacher asks, "Are you ready?"',o:['Yes, I\'m ready. Thank you.','Yeah, yeah.'],a:0,why:'Full, polite answers sound professional.'},
+   {q:'You need time to think.',o:['I dunno.','That\'s a good question. Let me think for a moment.'],a:1,why:'This phrase gives you time and sounds confident.'},
+   {q:'Talking about your future:',o:['I\'m gonna be a nurse.','I\'m planning to become a nurse.'],a:1,why:'"Gonna" is informal. "Planning to" is professional.'},
+   {q:'Talking about a difficult project:',o:['The project was really bad and my group was lazy.','The project was challenging, but I learned a lot from it.'],a:1,why:'Stay positive. Show what you learned.'},
+   {q:'The interview ends.',o:['OK, bye.','Thank you for your time. Have a nice day.'],a:1,why:'Thank the interviewer before you leave.'},
+   {q:'The teacher says, "Please have a seat."',o:['Thank you.','OK.'],a:0,why:'A simple "Thank you" is polite.'}
+  ],{done:(r,t)=>{if(r/t>=.75)award('s4');else toast('Look at the timeline again, then retry (75%+).')}});
+};
+
+VIEWS.s5=m=>{
+  m.innerHTML=`<h2>5. Body language for the interview</h2>
+  <p class="lead">Your body speaks before you do. Non-verbal communication is part of the 25 marks for Communication skills. The recording hears your voice, and your teacher sees everything else.</p>
+  <div class="grid">
+    <div class="card"><h3>👀 Eye contact</h3>Look at the teacher's face most of the time. It is OK to look away for a moment when you think, then look back. If a third person is there, look at both of you, mostly at the person asking.</div>
+    <div class="card"><h3>🪑 Posture</h3>Sit back in the chair. Back straight, shoulders relaxed, feet on the floor. Lean a little forward to show interest. Don't slouch or cross your arms.</div>
+    <div class="card"><h3>✋ Hands</h3>Rest your hands on your lap or the table. Use gestures "in the box" (between chest and waist). Open palms show honesty. Don't play with your pen, sleeve or keys.</div>
+    <div class="card"><h3>🙂 Face</h3>Smile when you greet and when you say goodbye. Nod while the teacher is speaking. It shows active listening.</div>
+    <div class="card"><h3>🔊 Voice</h3>Speak loudly enough for the recording. Not too fast. Pause at the end of a sentence. Stress important words.</div>
+    <div class="card"><h3>🤲 Greeting</h3>Follow the interviewer's lead. A smile with a hand on the heart and a small nod is polite and professional in the UAE. Don't reach for a handshake unless one is offered.</div>
+  </div>`;
+  actHead(m,'Practice','Do or don\'t?');
+  const D=['✔ Do','✘ Don\'t'];
+  mcq(m,'s5a',[
+   {q:'Sit up straight and lean a little forward.',o:D,a:0,why:'This looks confident and interested.'},
+   {q:'Cross your arms while you answer.',o:D,a:1,why:'Crossed arms can look closed or defensive.'},
+   {q:'Nod while the teacher is speaking.',o:D,a:0,why:'It shows active listening.'},
+   {q:'Look out of the window when you answer.',o:D,a:1,why:'It looks like you are not interested. Look at the interviewer.'},
+   {q:'Play with your pen to stay calm.',o:D,a:1,why:'It distracts the interviewer. Rest your hands instead.'},
+   {q:'Speak loudly enough for the recording.',o:D,a:0,why:'Other teachers will listen. A low voice loses marks.'},
+   {q:'Put your bag on the teacher\'s table.',o:D,a:1,why:'Keep your bag on the floor, or don\'t bring many bags.'},
+   {q:'Smile when you say "Good morning".',o:D,a:0,why:'A smile builds rapport.'}
+  ],{inline:true});
+  actHead(m,'Scenarios','What should you do?');
+  mcq(m,'s5b',[
+   {q:'The interviewer smiles and puts a hand on her heart as a greeting.',o:['Try to shake her hand','Do the same, smile and say "Good morning"','Look down and sit'],a:1,why:'Follow the interviewer\'s lead.'},
+   {q:'A third person is in the room.',o:['Look only at the floor','Look at both people, mostly at the person asking','Ignore the third person'],a:1,why:'Include everyone with your eye contact.'},
+   {q:'You feel nervous and start speaking very fast.',o:['Speak even faster to finish','Stop talking','Slow down and pause at the end of each sentence'],a:2,why:'Pauses make you sound calm and clear.'},
+   {q:'You are explaining a team project.',o:['Use open-palm gestures in front of your body','Keep your hands in your pockets','Point at the teacher'],a:0,why:'Natural gestures "in the box" help you explain.'}
+  ],{done:()=>{
+    const keys=Object.keys(S.answered).filter(k=>k.startsWith('s5'));const ok=keys.filter(k=>S.answered[k]).length;
+    if(ok/12>=.7)award('s5');else toast('Read the six cards again, then retry (70%+).');
+  }});
+};
+
+VIEWS.s6=m=>{
+  m.innerHTML=`<h2>6. Tips and tricks to stay calm</h2>
+  <p class="lead">Everyone feels nervous. Good speakers are not "never nervous". They have strategies. Using them is part of your Communication skills mark.</p>
+  <div class="grid">
+    <div class="card"><h3>Buy time</h3><span class="say">That's a good question.</span><span class="say">Let me think for a moment.</span><span class="say">Well, let me see…</span></div>
+    <div class="card"><h3>Didn't understand?</h3><span class="say">Sorry, could you repeat the question, please?</span><span class="say">Do you mean…?</span><span class="say">Could you say that in a different way?</span></div>
+    <div class="card"><h3>Fix a mistake</h3><span class="say">Sorry, I mean…</span><span class="say">Let me say that again.</span> Fix it quickly, then continue. Once or twice will not affect your grade.</div>
+    <div class="card"><h3>Hesitation into a pause</h3>Feel an "umm" coming? Close your mouth, breathe, then continue. A silent pause sounds confident. "Umm umm umm" does not.</div>
+    <div class="card"><h3>Forgot a word?</h3>Explain it another way. Forgot "responsibility"? Say <span class="say">I had to take care of…</span></div>
+    <div class="card"><h3>Brain-body connection</h3>Outside the room: stand tall for one minute, drop your shoulders, and breathe slowly. Your body tells your brain "I am OK".</div>
+  </div>
+  <div class="card">
+    <h3>Prepare keywords, not scripts</h3>
+    <p>Memorized answers sound robotic, and the rubric takes marks for it. Prepare <b>3–4 keywords</b> for each answer and practise speaking from them.</p>
+    <p style="margin:0">Then build each answer like this: <b>Answer → Reason → Example.</b><br>
+    <span class="say">I prefer working in teams</span> → <span class="say">because we share ideas</span> → <span class="say">For example, in our LSC project, my group…</span></p>
+  </div>
+  <div class="tip"><strong>Practise like a professional:</strong> record yourself on your phone and listen. Practise with a friend and give each other feedback.</div>
+  <div class="card breathe">
+    <h3>Try it: calm breathing</h3>
+    <div class="circle" id="circle">Ready</div>
+    <button class="btn mint" id="bBtn">Start 3 slow breaths</button>
+    <p style="font-size:.9rem;color:var(--muted);margin:0">Breathe in for 4 seconds, out for 6 seconds. Use this outside the interview room.</p>
+  </div>`;
+  $('#bBtn').onclick=()=>{
+    const c=$('#circle'),b=$('#bBtn');b.disabled=true;let n=0;
+    (function cycle(){
+      if(n===3){c.textContent='Well done';c.style.transform='scale(1)';b.disabled=false;return}
+      n++;c.textContent='Breathe in';c.style.transitionDuration='4s';c.style.transform='scale(1.5)';
+      setTimeout(()=>{c.textContent='Breathe out';c.style.transitionDuration='6s';c.style.transform='scale(1)';setTimeout(cycle,6000)},4000);
+    })();
+  };
+  actHead(m,'Scenarios','Rescue the moment');
+  mcq(m,'s6',[
+   {q:'The teacher asks a question and your mind goes blank.',o:['Say "I don\'t know" and stop','Breathe, then say "That\'s a good question. Let me think for a moment."','Answer a different question'],a:1,why:'Buy time politely and calmly.'},
+   {q:'You notice you are saying "umm" a lot.',o:['Close your mouth, pause, then continue','Say "umm" louder','Start the whole answer again'],a:0,why:'Turn the hesitation into a silent pause.'},
+   {q:'You forgot the English word "experience".',o:['Say it in Arabic','Stop talking','Explain it another way: "the things I did before…"'],a:2,why:'Paraphrasing keeps you going.'},
+   {q:'You said "I study here since two years." You notice the mistake.',o:['"Sorry, I mean I have studied here for two years." Then continue','Apologize many times','Ignore it and say nothing more'],a:0,why:'Quick self-correction, then continue. That is exactly what the rubric wants.'},
+   {q:'Which is the best way to prepare?',o:['Memorize every answer word for word','Prepare keywords and practise speaking naturally','Only prepare Question 1'],a:1,why:'Keywords help you sound natural and well-prepared.'}
+  ],{done:(r,t)=>{if(r/t>=.8)award('s6');else toast('Read the tips again, then retry (80%+).')}});
+};
+
+VIEWS.s7=m=>{
+  m.innerHTML=`<h2>7. Watch and compare</h2>
+  <p class="lead">Read two samples of the same interview moments. Italic lines show what the student <b>does</b>.</p>
+  <div class="two">
+    <div class="script weak"><h3>Sample A: Hamad</h3>
+      <p class="act">Arrives 2 minutes late. Walks in without knocking, phone in his hand.</p>
+      <p><span class="who">Hamad:</span> Hi. Where do I sit?</p>
+      <p><span class="who">Teacher:</span> Good morning, Hamad. Please have a seat. How are you today?</p>
+      <p class="act">Sits back low in the chair and looks at the floor.</p>
+      <p><span class="who">Hamad:</span> Fine.</p>
+      <p><span class="who">Teacher:</span> You said you like football. Can you tell me more about that?</p>
+      <p><span class="who">Hamad:</span> Yeah. I like it. That's it.</p>
+      <p><span class="who">Teacher:</span> Thank you, Hamad. That's the end of the interview.</p>
+      <p class="act">Stands up quickly and checks his phone.</p>
+      <p><span class="who">Hamad:</span> OK, bye.</p>
+    </div>
+    <div class="script strong"><h3>Sample B: Mahra</h3>
+      <p class="act">Arrives 5 minutes early. Knocks and waits. Smiles.</p>
+      <p><span class="who">Mahra:</span> Good morning, Ms Sara. May I come in?</p>
+      <p><span class="who">Teacher:</span> Good morning, Mahra. Please have a seat. How are you today?</p>
+      <p class="act">Sits up straight, looks at the teacher.</p>
+      <p><span class="who">Mahra:</span> I'm very well, thank you. How are you?</p>
+      <p><span class="who">Teacher:</span> You said you like photography. Can you tell me more about that?</p>
+      <p><span class="who">Mahra:</span> Sure. I enjoy taking photos of nature and events. For example, on National Day I took photos of the celebrations at the Corniche and made a small album for my family. It taught me to be patient and creative.</p>
+      <p><span class="who">Teacher:</span> What skills could photography give you for work?</p>
+      <p><span class="who">Mahra:</span> Sorry, could you repeat the question, please?</p>
+      <p><span class="who">Teacher:</span> What skills could it give you for your future job?</p>
+      <p><span class="who">Mahra:</span> That's a good question. Let me think… I think it gives me attention to detail, because I check every photo carefully.</p>
+      <p><span class="who">Teacher:</span> Thank you, Mahra. That's the end of the interview.</p>
+      <p class="act">Stands up calmly and smiles.</p>
+      <p><span class="who">Mahra:</span> Thank you for your time, Ms Sara. Have a nice day.</p>
+    </div>
+  </div>`;
+  actHead(m,'Spot it','Find ALL of Hamad\'s problems (choose 5)');
+  const probs=[
+   ['He didn\'t knock or greet politely.',1],['He had his phone with him.',1],['He gave a one-word answer: "Fine."',1],
+   ['He looked at the floor and sat low in the chair.',1],['He said "OK, bye" instead of thanking the teacher.',1],
+   ['He answered in English.',0],['He sat down in the chair.',0]
+  ];
+  const box=document.createElement('div');box.className='q';
+  box.innerHTML=`<div class="chk">${probs.map((p,i)=>`<label><input type="checkbox" data-i="${i}"> ${p[0]}</label>`).join('')}</div><button class="btn" id="chkBtn">Check my answers</button><div class="fb" id="chkFb"></div>`;
+  m.appendChild(box);
+  let spotOk=false;
+  $('#chkBtn').onclick=()=>{
+    let score=0;
+    box.querySelectorAll('label').forEach(l=>{
+      const i=+l.querySelector('input').dataset.i,ch=l.querySelector('input').checked,real=probs[i][1];
+      l.classList.remove('right','wrong','missed');
+      if(ch&&real){l.classList.add('right');score++}
+      else if(ch&&!real)l.classList.add('wrong');
+      else if(!ch&&real)l.classList.add('missed');
+      else score++;
+    });
+    const fb=$('#chkFb');fb.className='fb show '+(score===7?'ok':'no');
+    fb.innerHTML=score===7?'✔ Perfect! You found all 5 problems.':'Green dashed boxes are problems you missed. Red boxes are not problems. Try again.';
+    if(score===7&&!spotOk){spotOk=true;if(!S.answered.s7spot)addPts(30);S.answered.s7spot=true;checkS7()}
+  };
+  actHead(m,'Practice','Questions about Mahra');
+  let mcqDone=false;
+  function checkS7(){if(spotOk&&mcqDone)award('s7')}
+  mcq(m,'s7',[
+   {q:'What did Mahra do when she didn\'t understand?',o:['She guessed an answer','She asked politely: "Sorry, could you repeat the question, please?"','She stayed silent'],a:1,why:'Asking for repetition politely is professional.'},
+   {q:'Which phrase did Mahra use to get time to think?',o:['"That\'s a good question. Let me think…"','"I don\'t know."','"Umm, umm."'],a:0,why:'A time-buying phrase.'},
+   {q:'How did Mahra answer "Can you tell me more about that?"',o:['"That\'s it."','She repeated her first answer','"Sure. For example…" and gave a real example with details'],a:2,why:'Answer → Example → what she learned. The teacher can "see" her story.'},
+   {q:'Which rubric part is the biggest difference in their greetings and goodbyes?',o:['Professionalism','Language','Grammar only'],a:0,why:'Punctuality, polite greeting and thanking are Professionalism.'}
+  ],{done:(r,t)=>{if(r/t>=.75){mcqDone=true;checkS7();if(!spotOk)toast('Now complete "Spot it" to earn the badge.')}else toast('Read Sample B again, then retry.')}});
+};
+
+const TASKS=[
+ {t:'Enter the room',say:'Good morning. Please have a seat. How are you today?',you:'Greet the teacher, say thank you, and ask how they are.'},
+ {t:'Answer a follow-up question',say:'You said you like cooking. Can you tell me more about that?',you:'Start with "Sure." Then give a real example with details. (Change "cooking" to your real hobby.)'},
+ {t:'Buy time, then answer',say:'What would you say is your biggest achievement so far?',you:'Use a time-buying phrase first. Then answer in 2 or 3 sentences.'},
+ {t:'Leave the room',say:'Thank you. That\'s the end of the interview.',you:'Thank the teacher politely and say goodbye.'}
+];
+VIEWS.s8=m=>{
+  m.innerHTML=`<h2>8. Rehearsal studio</h2>
+  <p class="lead">Now speak! Your interview is recorded, so practise with a recording too. Click <b>Hear the teacher</b>, then record your answer and listen back. Record at least 3 tasks to earn the badge.</p>
+  <div class="tip"><strong>While you record:</strong> sit up straight, smile, look at the screen as if it is the teacher's face, and use your hands naturally. You can also practise with a friend as your "teacher".</div>
+  <div id="recs"></div>
+  <p id="recNote" style="font-size:.9rem;color:var(--muted)"></p>`;
+  const R=$('#recs');
+  const canRec=!!(navigator.mediaDevices&&window.MediaRecorder);
+  if(!canRec)$('#recNote').textContent='Recording is not available in this browser. Practise out loud with a friend, then tick the checklist.';
+  TASKS.forEach((tk,i)=>{
+    const d=document.createElement('div');d.className='rec';
+    d.innerHTML=`<h3>Task ${i+1}: ${tk.t}</h3>
+      <div class="prompt"><b>Teacher:</b> "${esc(tk.say)}"</div>
+      <p style="margin:.3rem 0"><b>Your turn:</b> ${tk.you}</p>
+      <div class="row"><button class="btn ghost hear">🔈 Hear the teacher</button>
+      ${canRec?'<button class="btn go">🎙️ Record</button><span class="st"></span>':'<button class="btn mint manual">I practised this out loud</button>'}</div>
+      <div class="play"></div>
+      <div class="chk self" style="display:none">
+        <b style="margin-top:.4rem">Listen and check yourself:</b>
+        <label><input type="checkbox"> My voice was loud and clear.</label>
+        <label><input type="checkbox"> I used polite, formal words.</label>
+        <label><input type="checkbox"> I paused instead of saying "umm" a lot.</label>
+        <label><input type="checkbox"> I sounded natural, not memorized.</label>
+      </div>`;
+    R.appendChild(d);
+    d.querySelector('.hear').onclick=()=>{
+      if(!('speechSynthesis' in window)){toast('Speech is not available. Read the teacher\'s line aloud.');return}
+      speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(tk.say);u.lang='en-GB';u.rate=.92;speechSynthesis.speak(u);
+    };
+    const markDone=()=>{
+      d.querySelector('.self').style.display='flex';
+      if(!S.recs[i]){S.recs[i]=true;addPts(15)}
+      if(Object.keys(S.recs).length>=3)award('s8');
+    };
+    if(!canRec){d.querySelector('.manual').onclick=markDone;return}
+    let mr=null,chunks=[];
+    const goB=d.querySelector('.go'),st=d.querySelector('.st');
+    goB.onclick=async()=>{
+      if(mr&&mr.state==='recording'){mr.stop();return}
+      try{
+        const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+        chunks=[];mr=new MediaRecorder(stream);
+        mr.ondataavailable=e=>chunks.push(e.data);
+        mr.onstop=()=>{
+          stream.getTracks().forEach(t=>t.stop());
+          const url=URL.createObjectURL(new Blob(chunks,{type:mr.mimeType||'audio/webm'}));
+          d.querySelector('.play').innerHTML=`<audio controls src="${url}"></audio>`;
+          goB.textContent='🎙️ Record again';st.innerHTML='';markDone();
+        };
+        mr.start();goB.textContent='⏹ Stop';st.innerHTML='<span class="recdot"></span> Recording…';
+      }catch(e){toast('Microphone blocked. Allow the microphone in your browser, or practise out loud.');}
+    };
+  });
+};
+
+const FINAL=[
+ {q:'You arrive and the door is closed. What do you do?',o:['Open it and walk in','Knock, wait, and say "Good morning. May I come in?"','Call the teacher on your phone'],a:1,why:'Knock, wait, greet politely.'},
+ {q:'Where should your phone be during the interview?',o:['In your hand','On the table','Switched off and put away, not with you'],a:2,why:'No phones or devices with you.'},
+ {q:'The teacher asks a question you don\'t understand.',o:['"What?"','"Sorry, could you repeat the question, please?"','Answer a different question'],a:1,why:'Polite request for repetition.'},
+ {q:'You need a few seconds to think.',o:['"Umm… umm… umm…"','"That\'s a good question. Let me think for a moment."','Stay silent for a whole minute'],a:1,why:'A time-buying phrase sounds confident.'},
+ {q:'What is the best way to prepare your answers?',o:['Memorize every answer word for word','Prepare keywords and practise speaking naturally','Prepare only Question 1'],a:1,why:'Memorized answers lose marks. Prepare all questions with keywords.'},
+ {q:'Which part of the rubric has the most marks?',o:['Professionalism','Content (task achievement)','Language'],a:1,why:'Content is 40 marks.'},
+ {q:'How long is the interview?',o:['About 1 minute','3 to 5 minutes','15 minutes'],a:1,why:'3–5 minutes.'},
+ {q:'You say, "Last year I go to Dubai." What is the best thing to do?',o:['Stop and say nothing','"Sorry, I went to Dubai." Then continue','Start the whole answer again from the beginning'],a:1,why:'Quick self-correction, then keep going.'},
+ {q:'Which posture is best?',o:['Lean back with your arms crossed','Sit up straight, lean a little forward, hands relaxed','Play with your pen to stay calm'],a:1,why:'Confident, open and interested.'},
+ {q:'The teacher says, "Can you tell me more about that?"',o:['"No, that\'s all."','"Sure. For example…" and give details','Repeat your first answer exactly'],a:1,why:'Extend with a real example.'}
+];
+VIEWS.s9=m=>{
+  m.innerHTML=`<h2>9. Final check</h2>
+  <p class="lead">10 questions from everything in this app. Score 8 or more (80%) to get your <b>Interview Pass</b>.</p>
+  ${S.final?`<div class="tip"><strong>Your last score:</strong> ${S.final.score}/10 (${S.final.pct}%). You can take it again.</div>`:''}
+  <div id="fq"></div>`;
+  const shuffled=FINAL.map(x=>x).sort(()=>Math.random()-.5);
+  mcq($('#fq'),'s9',shuffled,{done:(r,t)=>{
+    const pct=Math.round(r/t*100);S.final={score:r,pct,date:new Date().toLocaleString()};
+    const res=document.createElement('div');res.className='card';res.style.textAlign='center';
+    if(pct>=80){
+      award('s9');
+      res.innerHTML=`<h3>🎫 You passed: ${pct}%</h3><p>Great work! Collect your Interview Pass.</p><button class="btn" id="showCert">Show my Interview Pass</button>`;
+      $('#fq').appendChild(res);$('#showCert').onclick=showCert;showCert();
+    }else{
+      res.innerHTML=`<h3>${pct}%: almost there</h3><p>You need 80%. Review the stations and try again.</p><button class="btn" id="retry">Try again</button>`;
+      $('#fq').appendChild(res);$('#retry').onclick=()=>go('s9');
+    }
+  }});
+};
+
+/* ================= CERT & FILES ================= */
+function showCert(){
+  $('#cName').textContent=S.name||'Student';
+  $('#cInit').textContent=(S.name||'S').trim().charAt(0).toUpperCase();
+  $('#cMeta').textContent=`Final check: ${S.final?S.final.pct:0}%  |  Points: ${S.points}  |  Badges: ${S.badges.length}/9  |  ${new Date().toLocaleDateString()}`;
+  $('#cert').classList.add('show');confetti();
+}
+function download(obj,fname){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));
+  a.download=fname;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+const safe=()=>(S.name||'student').replace(/[^\w]+/g,'_');
+$('#resBtn').onclick=()=>download({app:'Interview Ready 1: Step Into the Room',course:'LSC 1503',student:S.name,finalScore:S.final,points:S.points,badges:S.badges.map(b=>BADGES[b].name),date:new Date().toISOString()},`IR1_results_${safe()}.json`);
+$('#saveBtn').onclick=()=>{download({app:'IR1',state:S},`IR1_progress_${safe()}.json`);toast('Progress file downloaded.')};
+$('#loadBtn').onclick=()=>$('#loadFile').click();
+$('#loadFile').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=()=>{
+    try{const d=JSON.parse(r.result);if(d.app!=='IR1')throw 0;Object.assign(S,d.state);refreshTop();go('home');toast('Welcome back, '+(S.name||'student')+'!')}
+    catch(err){toast('This file is not an Interview Ready 1 progress file.')}
+  };r.readAsText(f);e.target.value='';
+};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#cert').classList.remove('show')});
+
+go('home');
+</script>
+</body>
+</html>
